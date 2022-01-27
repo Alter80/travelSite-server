@@ -54,6 +54,23 @@ async function run() {
             res.json(result);
         })
 
+        // update post status
+        app.put('/places/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedUser = req.body;
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    status: 'approved'
+                },
+
+            }
+            const result = await placeCollection.updateOne(filter, updateDoc, options)
+            console.log('updating user', req)
+            res.json(result)
+        })
+
         // users data post to mongodb
         app.post('/users', async (req, res) => {
             const user = req.body;
@@ -84,20 +101,6 @@ async function run() {
             res.json({ admin: isAdmin });
         })
 
-        // add orders 
-        app.post('/addOrders', async (req, res) => {
-            const addOrder = req.body;
-            const result = await addOrderCollection.insertOne(addOrder);
-            console.log(result);
-            res.json(result)
-        })
-
-        // get orders
-        app.get('/addOrders', async (req, res) => {
-            const cursor = addOrderCollection.find({});
-            const orders = await cursor.toArray();
-            res.json(orders);
-        })
 
         // update order rating
         app.put('/addOrders', async (req, res) => {
@@ -115,32 +118,7 @@ async function run() {
             res.json(result);
         })
 
-        // update order status
-        app.put('/addOrders/:id', async (req, res) => {
-            const id = req.params.id;
-            const updatedUser = req.body;
-            const filter = { _id: ObjectId(id) }
-            const options = { upsert: true };
-            const updateDoc = {
-                $set: {
-                    status: 'approved'
-                },
 
-            }
-            const result = await addOrderCollection.updateOne(filter, updateDoc, options)
-            console.log('updating user', req)
-            res.json(result)
-        })
-
-
-        // delete order
-        app.delete('/addOrders/:id', async (req, res) => {
-            const id = req.params.id;
-            console.log(id);
-            const query = { _id: ObjectId(id) };
-            const result = await addOrderCollection.deleteOne(query);
-            res.json(result);
-        })
     }
     finally {
 
